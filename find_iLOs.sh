@@ -9,6 +9,9 @@ ILOS_IPS=`mktemp /tmp/findilos.XXXXX`
 ILO_XML=`mktemp /tmp/iloxml.XXXXX`
 
 # FUNCTIONS
+
+# Function that parses XML
+# http://stackoverflow.com/questions/893585/how-to-parse-xml-in-bash
 parse_xml(){
     local IFS=\>
     read -d \< ENTITY CONTENT
