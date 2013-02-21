@@ -8,6 +8,14 @@ network=$1
 ILOS_IPS=`mktemp /tmp/findilos.XXXXX`
 ILO_XML=`mktemp /tmp/iloxml.XXXXX`
 
+# FUNCTIONS
+parse_xml(){
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+}
+
+# MAIN
+
 # Get a list of IPs with the 17988 TCP port opened (iLO Virtual Media port)
 # nmap options:
 #    -n: Never do DNS resolution.
@@ -22,7 +30,6 @@ ips=($(<$ILOS_IPS));
 
 for ip in "${ips[@]}"
 do
-    echo $ip
     # read the xmldata from iLO
     # -m: Maximum time in seconds that you allow the whole operation to take.
     # -f: (HTTP) Fail silently (no output at all) on server errors.
@@ -38,7 +45,12 @@ do
     #       <HWRI>ASIC: 7</HWRI>
     #       <SN>ILOCZC7515KS6 </SN>
     # </RIMP>
-    cat $ILO_XML
+    while parse_xml; do
+        if [[ $ENTITY = "SBSN" ]]; then
+            sbsn=$CONTENT
+        fi
+    done < $ILO_XML
+    printf "%s %s\n" $ip $sbsn
     
 done
 
