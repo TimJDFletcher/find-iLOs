@@ -38,8 +38,9 @@ do
     # -f: (HTTP) Fail silently (no output at all) on server errors.
     # -s: silent mode.
     curl -m 3 -f -s http://$iloip/xmldata?item=All > $ILO_XML
-    # XML format
-    # <?xml version="1.0"?><RIMP><HSI>
+    # XML format example
+    # <?xml version="1.0"?>
+    # <RIMP>
     #       <SBSN>CZC7515KS6 </SBSN> 
     #       <SPN>ProLiant DL380 G5</SPN>
     #       [...]
@@ -51,9 +52,19 @@ do
     while parse_xml; do
         if [[ $ENTITY = "SBSN" ]]; then
             sbsn=$CONTENT
+        elif [[ $ENTITY = "SPN" ]]; then
+            spn=$CONTENT
+        elif [[ $ENTITY = "PN" ]]; then
+            pn=$CONTENT
+        elif [[ $ENTITY = "FWRI" ]]; then
+            fwri=$CONTENT
+        elif [[ $ENTITY = "HWRI" ]]; then
+            hwri=$CONTENT
+        elif [[ $ENTITY = "SN" ]]; then
+            sn=$CONTENT
         fi
     done < $ILO_XML
-    printf "%s %s\n" $ip $sbsn
+    echo "$ip | $sbsn | $spn | $pn | $fwri | $hwri | $sn"
     
 done
 
