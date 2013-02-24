@@ -26,10 +26,15 @@ parse_xml(){
 #    -PN: Treat all hosts as online (skip host discovery).
 #    -p 17988: only scans port 17988.
 #    -oG -: output scan in grepable format
-
 nmap -n -sS -PN -p 17988 -oG - $network | grep /open/ | awk '{print $2}' > $ILOS_IPS
 
+# Array of iLOs IPs
 ips=($(<$ILOS_IPS));
+
+# Print header
+echo ""
+echo "  IP Address   | iLO Type | iLO FW |   Server Model    | Server S/N "
+echo "---------------|----------|--------|-------------------|------------"
 
 for ip in "${ips[@]}"
 do
@@ -88,7 +93,7 @@ do
     esac
         
     # Print iLO data
-    echo "$ip | $sbsn | $spn | $fwri | $hwri | $ilotype | $sn"
+    printf "%-15s| %-8s | %-6s | %-18s| %-10s\n" "$ip" "$ilotype" "$fwri" "$spn" "$sbsn"
     
 done
 
