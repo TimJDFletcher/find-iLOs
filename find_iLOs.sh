@@ -38,13 +38,13 @@ do
     # -f: (HTTP) Fail silently (no output at all) on server errors.
     # -s: silent mode.
     curl -m 3 -f -s http://$iloip/xmldata?item=All > $ILO_XML
+    
     # XML format example
     # <?xml version="1.0"?>
     # <RIMP>
     #       <SBSN>CZC7515KS6 </SBSN> 
     #       <SPN>ProLiant DL380 G5</SPN>
     #       [...]
-    #       <PN>Integrated Lights-Out 2 (iLO 2)</PN>
     #       <FWRI>2.05</FWRI>
     #       <HWRI>ASIC: 7</HWRI>
     #       <SN>ILOCZC7515KS6 </SN>
@@ -54,8 +54,6 @@ do
             sbsn=$CONTENT
         elif [[ $ENTITY = "SPN" ]]; then
             spn=$CONTENT
-        elif [[ $ENTITY = "PN" ]]; then
-            pn=$CONTENT
         elif [[ $ENTITY = "FWRI" ]]; then
             fwri=$CONTENT
         elif [[ $ENTITY = "HWRI" ]]; then
@@ -64,7 +62,33 @@ do
             sn=$CONTENT
         fi
     done < $ILO_XML
-    echo "$ip | $sbsn | $spn | $pn | $fwri | $hwri | $sn"
+
+    # iLO type:
+    #   HWRI: 
+    #     - TO       -> i-iLO
+    #     - ASIC:  2 -> iLO-1
+    #     - ASIC:  7 -> iLO-2
+    #     - ASIC:  8 -> iLO-3
+    case $hwri in
+        "TO")
+            ilotype="i-iLO"
+            ;;
+        "ASIC:  2")
+            ilotype="iLO-1"
+            ;;
+        "ASIC:  7")
+            ilotype="iLO-2"
+            ;;
+        "ASIC:  8")
+            ilotype="iLO-3"
+            ;;
+        *)
+            ilotype="N/A"
+            ;;
+    esac
+        
+    # Print iLO data
+    echo "$ip | $sbsn | $spn | $fwri | $hwri | $ilotype | $sn"
     
 done
 
