@@ -104,5 +104,9 @@ do
     
 done
 
+# Total number of iLOs found
+num_ilos=${#ips[@]}
+echo "$num_ilos iLOs found on $network"
+
 # Delete temporary files
 rm -f $ILOS_IPS $ILO_XML
