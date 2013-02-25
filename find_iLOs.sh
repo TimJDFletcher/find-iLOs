@@ -3,6 +3,13 @@
 # find_iLOs: Search a network for iLOs.
 #
 
+# Check arguments
+if [[ $# != 1 ]]; then
+    echo "Usage: $0 network"
+    echo " Example: $0 192.168.1.0/24"
+    exit 1
+fi
+
 network=$1
 
 ILOS_IPS=`mktemp /tmp/findilos.XXXXX`
