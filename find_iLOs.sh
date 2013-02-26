@@ -3,28 +3,64 @@
 # find_iLOs: Search a network for iLOs.
 #
 
+# FUNCTIONS
+
+# Function that prints the script usage
+function usage(){
+    echo "Usage: $0 network_or_ip"
+    echo "   Examples: $0 192.168.1.1"
+    echo "             $0 192.168.1.0/24"
+}
+
+# Function that parses XML
+# http://stackoverflow.com/questions/893585/how-to-parse-xml-in-bash
+function parse_xml(){
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+}
+
+# Function that validates if the argument passed is a valid IP or network
+function valid_ip_or_network(){
+    local  arg=$1
+    local  stat=1
+
+    # Check if it is a valid IP
+    if [[ $arg =~ ^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$ ]]; then
+        [[ ${BASH_REMATCH[1]} -le 255 && ${BASH_REMATCH[2]} -le 255 \
+            && ${BASH_REMATCH[3]} -le 255 && ${BASH_REMATCH[4]} -le 255 ]]
+        stat=$?
+    # Check if it is a valid Network
+    elif [[ $arg =~ ^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\/([0-9]{1,2})$ ]]; then
+        [[ ${BASH_REMATCH[1]} -le 255 && ${BASH_REMATCH[2]} -le 255 \
+            && ${BASH_REMATCH[3]} -le 255 && ${BASH_REMATCH[4]} -le 255 \
+            && ${BASH_REMATCH[5]} -le 32 ]]
+        stat=$?
+    fi
+
+    return $stat
+
+}
+
+# MAIN
+
 # Check arguments
 if [[ $# != 1 ]]; then
-    echo "Usage: $0 network"
-    echo " Example: $0 192.168.1.0/24"
+    usage
     exit 1
 fi
 
 network=$1
 
+# Check argument is a valid IP or network
+if ! valid_ip_or_network $network; then
+    echo "ERROR: $network is NOT a valid IP or network"
+    usage
+    exit 1
+fi    
+
+# Temporary files
 ILOS_IPS=`mktemp /tmp/findilos.XXXXX`
 ILO_XML=`mktemp /tmp/iloxml.XXXXX`
-
-# FUNCTIONS
-
-# Function that parses XML
-# http://stackoverflow.com/questions/893585/how-to-parse-xml-in-bash
-parse_xml(){
-    local IFS=\>
-    read -d \< ENTITY CONTENT
-}
-
-# MAIN
 
 # Get a list of IPs with the 17988 TCP port opened (iLO Virtual Media port)
 # nmap options:
