@@ -8,6 +8,13 @@ iLO (Integrated Lights-Out) is an embedded server management technology exclusiv
 
 ## Usage
 
+<pre><code>$ ./find_iLOs.sh
+Usage: ./find_iLOs.sh network_or_ip
+   Examples: ./find_iLOs.sh 192.168.1.1
+             ./find_iLOs.sh 192.168.1.0/24</code></pre>
+
+## Example
+
 <pre><code>$ ./find_iLOs 192.168.1.0.24
   IP Address   | iLO Type | iLO FW |   Server Model    | Server S/N
 ---------------|----------|--------|-------------------|------------
