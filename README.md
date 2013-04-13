@@ -15,7 +15,7 @@ Usage: ./find_iLOs.sh network_or_ip
 
 ## Example
 
-<pre><code>$ ./find_iLOs 192.168.1.0.24
+<pre><code>$ ./find_iLOs 192.168.1.0/24
   IP Address   | iLO Type | iLO FW |   Server Model    | Server S/N
 ---------------|----------|--------|-------------------|------------
 192.168.1.41   |  iLO-3   | 1.28   | ProLiant DL380 G7 | AB2047JB9Y
