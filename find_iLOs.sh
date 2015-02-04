@@ -117,6 +117,7 @@ do
     #     - ASIC:  2 -> iLO-1
     #     - ASIC:  7 -> iLO-2
     #     - ASIC:  8 -> iLO-3
+    #     - ASIC: 16 -> iLO-4
     case $hwri in
         "TO")
             ilotype="i-iLO"
@@ -129,6 +130,9 @@ do
             ;;
         "ASIC:  8")
             ilotype="iLO-3"
+            ;;
+        "ASIC: 16")
+            ilotype="iLO-4"
             ;;
         *)
             ilotype="N/A"
